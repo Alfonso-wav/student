@@ -1,0 +1,31 @@
+# Entorno del generador de voz. Solo se usa en local (GPU NVIDIA); la app no lo necesita.
+# `npm run tts` lo invoca con `uv run`, que crea `.venv` aquí la primera vez.
+[project]
+name = "student-tts"
+version = "0.0.0"
+requires-python = "==3.11.*"
+dependencies = [
+  "chatterbox-tts",
+  "torch==2.6.0",
+  "torchaudio==2.6.0",
+  # perth (marca de agua de Chatterbox) usa pkg_resources, que setuptools>=81 ya no trae.
+  "setuptools<81",
+  "faster-whisper",
+  "jiwer",
+]
+
+[tool.uv]
+package = false
+# Con enlaces duros desde la caché aparecieron paquetes a medio instalar en Windows.
+link-mode = "copy"
+
+[tool.uv.sources]
+# Chatterbox está retirado (ago 2026): fijamos el último commit.
+chatterbox-tts = { git = "https://github.com/resemble-ai/chatterbox", rev = "ab55923c27757c90cfcc407baa57dc25a7d25217" }
+torch = { index = "pytorch-cu124" }
+torchaudio = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true

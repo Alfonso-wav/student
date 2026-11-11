@@ -1,0 +1,11 @@
+node_modules
+dist
+dev-dist
+.visual-qa
+.playwright-cli
+*.log
+tools/tts/.venv
+tools/tts/.ckpt
+__pycache__
+tools/img/.venv
+*.apk

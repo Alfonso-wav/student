@@ -1,0 +1,6 @@
+{
+  "appId": "dev.student.app",
+  "appName": "Student",
+  "webDir": "dist",
+  "backgroundColor": "#0c0d0c"
+}

@@ -1,0 +1,28 @@
+# Entorno del generador de imágenes (Z-Image Turbo). Solo local, con GPU NVIDIA.
+# `npm run images` lo invoca con `uv run`, que crea `.venv` aquí la primera vez.
+[project]
+name = "student-img"
+version = "0.0.0"
+requires-python = "==3.11.*"
+dependencies = [
+  "torch==2.9.1",
+  "diffusers",
+  "transformers==5.22.2",
+  "accelerate==1.15.0",
+  "sentencepiece",
+  "protobuf",
+  "pillow",
+]
+
+[tool.uv]
+package = false
+link-mode = "copy"
+
+[tool.uv.sources]
+diffusers = { git = "https://github.com/huggingface/diffusers", rev = "0905b667fe3f37f43b6ef9c6e05ad20636206938" }
+torch = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
