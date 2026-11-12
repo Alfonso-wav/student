@@ -6,9 +6,9 @@ summary: EXPLAIN, EXPLAIN ANALYZE y los cuatro tipos de lectura que vas a ver si
 
 ## video: Qué hace Postgres con tu SQL
 
-> SQL es declarativo: dices qué quieres, no cómo conseguirlo. El planificador de Postgres genera muchos planes posibles, estima el coste de cada uno con las estadísticas que tiene de los datos, y ejecuta el más barato.
-% A written order card entering a machine that draws several alternative routes on a map
-% Each route on a map with a price tag, the cheapest route highlighted amber
+> Tú le pides datos a Postgres, pero no le dices cómo buscarlos. Eso lo decide el planificador: un pequeño GPS dentro de la base de datos. Dibuja muchos caminos posibles, mira sus estadísticas para calcular cuánto cuesta cada uno… ¡y elige el más barato!
+% A navigation device projecting many glowing alternative routes over a city map
+% A city map with several routes, each with a price tag, the shortest route highlighted and the others fading
 
 ```
 WHERE cliente_id = 4242
@@ -20,9 +20,9 @@ coste estimado · gana el menor
 
 ---
 
-> Por eso dos consultas casi iguales pueden ir a velocidades muy distintas. Y si las estadísticas mienten, el plan se equivoca. Hoy mucho SQL lo escribe un ORM, una IA o un compañero: saber leer el plan es lo que te deja juzgar si aguanta en producción.
-% A map with wrong statistics leading a traveler onto a long detour
-% A code reviewer holding a magnifying glass over a route plan before shipping
+> Pero ojo: si las estadísticas están viejas, el GPS cree que la calle está vacía… ¡y te mete en un atasco! Por eso dos consultas casi iguales pueden ir rapidísimo o lentísimo. Da igual quién escriba el SQL, tú, un ORM o una IA: leer el plan es tu superpoder para saber si aguanta.
+% A car stuck in a huge traffic jam while its navigation screen shows an outdated empty street
+% A magnifying glass held over a route plan on a desk, inspecting it before shipping
 
 - estadísticas malas → plan malo
 - SQL de ORM, IA o un compañero
@@ -30,10 +30,10 @@ coste estimado · gana el menor
 
 ## video: EXPLAIN y EXPLAIN ANALYZE
 
-> EXPLAIN muestra el plan elegido, con estimaciones, sin ejecutar nada. EXPLAIN ANALYZE ejecuta la consulta de verdad, y añade tiempos y filas reales. En Postgres dieciocho, además, incluye por defecto los buffers: páginas leídas de caché o de disco.
-% A blueprint of a route with estimated times, nobody walking it
-% A runner actually running the route with a stopwatch, recording real times
-% Pages being read from a nearby shelf and some from a far storage room
+> EXPLAIN es mirar el mapa antes del viaje: te enseña la ruta elegida y lo que cree que tardará, sin moverse del sitio. EXPLAIN ANALYZE hace el viaje de verdad, ¡con cronómetro! Tiempos reales y filas reales. Y en Postgres dieciocho te chiva también los buffers: cuántas páginas salieron de la memoria y cuántas del disco.
+% A paper map on a desk with a dotted route and an estimated clock time next to it
+% A runner on a road holding a large stopwatch, speed lines behind
+% Pages flying quickly out of a nearby shelf and a few slowly arriving from a far away warehouse
 
 - `EXPLAIN` → plan + estimaciones, no ejecuta
 - `EXPLAIN ANALYZE` → **ejecuta**: tiempo y filas reales
@@ -41,9 +41,9 @@ coste estimado · gana el menor
 
 ---
 
-> Cuidado: EXPLAIN ANALYZE de un DELETE o un UPDATE borra o modifica de verdad. Envuélvelo en una transacción y deshazla al final.
-% A big delete button inside a protective glass box with an undo arrow
-% A transaction envelope wrapping an action and then being torn up to undo it
+> ¡Cuidado, trampa! EXPLAIN ANALYZE ejecuta la consulta de verdad. Si es un DELETE, borra. Si es un UPDATE, cambia los datos. El truco: mételo en una transacción y haz rollback al final. Es como jugar con un botón de deshacer.
+% A big red delete button inside a protective glass dome
+% A large undo arrow sweeping scattered blocks back into place
 
 ```sql
 BEGIN;
@@ -54,10 +54,10 @@ ROLLBACK;
 
 ## video: Cómo se lee una línea del plan
 
-> Cada línea del plan es un nodo: qué operación hace y sobre qué tabla. El coste son unidades arbitrarias, solo sirven para comparar planes. Rows es lo que el planificador cree que saldrá.
-% A single labeled node card showing an operation icon over a table shelf
-% A price tag with arbitrary units comparing two route cards
-% A forecast board guessing how many parcels will come out
+> Cada línea del plan es un nodo: una tarea, como leer una tabla. Lleva un coste en unidades inventadas, que solo sirven para comparar planes entre sí. Y lleva rows: cuántas filas cree el planificador que van a salir. Cree, ¿eh? Es una apuesta.
+% A single task card showing a crate being lifted from a shelf, like a factory work order
+% Two price tags with abstract made-up currency symbols balanced on a scale
+% A weather-forecast style board predicting how many boxes will come out of a machine
 
 ```
 Seq Scan on pedidos
@@ -71,9 +71,9 @@ Seq Scan on pedidos
 
 ---
 
-> Con ANALYZE aparece lo que pasó de verdad: milisegundos reales y filas reales. El plan es un árbol: los nodos más indentados se ejecutan primero y pasan filas al de arriba. Se lee de dentro hacia fuera.
-% A stopwatch and a counter comparing the forecast with the real number of parcels
-% A tree of node cards where the deepest leaves run first and pass parcels upward
+> Con ANALYZE llega la verdad: milisegundos reales y filas reales, justo al lado de la apuesta. Y el plan es un árbol, como una cadena de montaje: los nodos de más adentro trabajan primero y pasan sus filas al de arriba. Se lee de dentro hacia fuera.
+% A scoreboard comparing a predicted count with the real count, stopwatch beside it
+% An assembly line shaped like an upside-down tree, workers at the leaves passing boxes up to the trunk
 
 ```
 (actual time=0.608..14.859
@@ -86,9 +86,9 @@ Seq Scan on pedidos
 
 ## video: Los cuatro tipos de lectura
 
-> Seq Scan lee la tabla entera, página a página. Index Scan recorre el índice y salta a cada fila de la tabla: bueno para pocas filas, sobre todo si necesita orden.
-% A huge library shelf of identical boxes; a tiny robot walks along every shelf checking each box one by one
-% A small card catalog drawer with an amber arrow pointing directly to exactly one box on a huge shelf
+> Hay cuatro formas de leer una tabla. Seq Scan: leerse el libro entero, página a página. Index Scan: ir al índice del final, encontrar la palabra y saltar justo a esa página. Genial para pocas filas, sobre todo si las quieres ordenadas.
+% A gigantic book being read page by page, a tall pile of turned pages behind
+% An arrow jumping from the index section of a book straight to one highlighted page
 
 | Nodo | Qué hace |
 |---|---|
@@ -97,10 +97,10 @@ Seq Scan on pedidos
 
 ---
 
-> Bitmap Heap Scan marca en un mapa qué páginas tienen filas, y luego las lee en orden: para un número medio de filas. Index Only Scan responde solo con el índice, sin tocar la tabla. Y un Seq Scan no es malo por sí mismo: lo es cuando lee doscientas mil filas para quedarse con veinte.
-% A map of shelves with some pages marked amber, then a robot visiting only those pages in order
-% A card catalog alone answering the question without touching the shelves
-% A robot carrying a huge pile of boxes to keep only a tiny handful, wasted effort
+> Bitmap Heap Scan: primero pegas pósits en las páginas que te interesan y luego las lees en orden, sin saltos locos. Ideal para un número medio de filas. Index Only Scan: el índice ya tiene la respuesta, ¡ni abres el libro! Y Seq Scan no es malo: lo malo es leer doscientas mil filas para quedarte con veinte.
+% A thick book with bright sticky notes sticking out of some pages, read in order from front to back
+% A small index card that already holds the answer, next to a closed book that stays shut
+% A conveyor dumping a mountain of boxes into a bin, only a tiny handful kept on a tray
 
 | Nodo | Qué hace |
 |---|---|
@@ -159,34 +159,32 @@ SELECT id, importe FROM pedidos WHERE estado = 'devuelto';
 
 ## quiz: Del lab: el índice de cliente
 
-En la consulta 1 el plan era `Seq Scan` con `Rows Removed by Filter: 199980`. En la 2, con el índice, pasó a `Bitmap Index Scan` + `Bitmap Heap Scan`. ¿Qué cambió en el trabajo que hace Postgres?
+En la consulta 1 salió `Seq Scan` con `Rows Removed by Filter: 199980`. En la 2, con índice, `Bitmap Index Scan` + `Bitmap Heap Scan`. ¿Qué cambió?
 
-- [ ] Nada: el índice solo cachea el resultado de la consulta anterior
-- [x] Antes leía las ~2.300 páginas de la tabla para quedarse con 20 filas; con el índice localiza las 20 filas y lee solo las páginas que las contienen
-- [ ] El índice ordena la tabla físicamente por `cliente_id`
-- [ ] Ahora la consulta se ejecuta en paralelo
+- [ ] Nada: el índice solo cachea el resultado anterior
+- [x] Antes leía toda la tabla (~2.300 páginas) para quedarse con 20 filas; ahora va directo a las páginas que las tienen
+- [ ] El índice ordena la tabla por `cliente_id`
+- [ ] Ahora se ejecuta en paralelo
 
-> En el plan se ve en los `Buffers`: 2.273 páginas leídas sin índice frente a 22 con él (20 de la tabla y 2 del índice). Eso es lo que baja el `Execution Time` de unos 14 ms a menos de 0,1 ms. Un índice B-tree es una estructura aparte que apunta a las filas; no reordena la tabla (eso sería `CLUSTER`, y es una operación puntual que no se mantiene sola).
+> Míralo en `Buffers`: **2.273 páginas** sin índice frente a **22** con él. Por eso pasa de ~14 ms a menos de 0,1 ms. Un B-tree es una estructura aparte que apunta a las filas: no reordena la tabla (eso es `CLUSTER`, y no se mantiene solo).
 
 ## quiz: Del lab: el índice que no se usa
 
-En la consulta 3 existía un índice en `estado`, pero Postgres eligió `Seq Scan` para `estado = 'entregado'`. ¿Por qué?
+En la consulta 3 había índice en `estado`, pero Postgres eligió `Seq Scan` para `estado = 'entregado'`. ¿Por qué?
 
-- [ ] El índice todavía no estaba construido
+- [ ] El índice aún no estaba construido
 - [ ] Postgres no usa índices en columnas de texto
-- [x] El 70 % de las filas cumple el filtro: leer la tabla de seguido es más barato que saltar del índice a casi todas las páginas
-- [ ] Hace falta `ANALYZE` después de crear un índice para que se use
+- [x] El 70 % de las filas cumple el filtro: leer la tabla de seguido sale más barato que saltar del índice a casi todas las páginas
+- [ ] Falta un `ANALYZE` tras crear el índice
 
-> Es la **selectividad**. Con el 2 % (`devuelto`, consulta 4) sí compensa usar el índice; con el 70 % habría que visitar prácticamente todas las páginas igualmente y además leer el índice. El planificador lo sabe porque las estadísticas guardan los **valores más frecuentes** de cada columna y su proporción (`pg_stats.most_common_vals`). Un índice sobre una columna con pocos valores muy repartidos rara vez ayuda y siempre cuesta: espacio y escrituras más lentas.
+> Es la **selectividad**. Con el 2 % (`devuelto`) sí compensa el índice; con el 70 % visitarías casi todas las páginas igual, más el índice. El planificador lo sabe por los **valores más frecuentes** de las estadísticas (`pg_stats.most_common_vals`).
 
 ## flash: rows estimado frente a rows real: ¿qué te dice?
 
-Si el planificador estima 10 filas y salen 100.000 (o al revés), **está decidiendo con información mala**, y todo lo que construye encima (tipo de join, orden, memoria) puede estar mal.
+Si estima 10 filas y salen 100.000, **decide con información mala**: el tipo de join, el orden y la memoria pueden estar mal.
 
-Causas habituales:
+- estadísticas viejas → `ANALYZE tabla`
+- columnas correlacionadas (`pais`, `ciudad`) → `CREATE STATISTICS`
+- filtros sobre funciones sin estadísticas
 
-- estadísticas viejas: tras cargas grandes, `ANALYZE tabla`;
-- columnas correlacionadas (`pais` y `ciudad`), que se arreglan con `CREATE STATISTICS`;
-- filtros sobre expresiones o funciones sin estadísticas propias.
-
-Es lo **primero** que hay que mirar en una consulta lenta: busca el nodo más profundo donde la estimación y la realidad se separan.
+Busca el nodo **más profundo** donde estimado y real se separan.

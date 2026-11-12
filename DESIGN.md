@@ -1,7 +1,7 @@
 ---
 version: 1
 name: student
-description: "Terminal de fósforo ámbar: fondo casi negro #0c0d0c, tinta gris verdosa #d7dcd5, un único acento ámbar #ffaf00 para la acción principal y el prompt. Una sola familia monoespaciada (JetBrains Mono) en todo. Superficies separadas por líneas rectas de 1 px y escalones de tono, esquinas cuadradas siempre. Sin imágenes, sin sombras en reposo, sin burbujas, sin emoji."
+description: "Dos modos. Feed en modo pop: cada tarjeta con su color saturado, esquinas redondeadas, Space Grotesk y celebraciones (ver § Feed pop). Resto de la app en modo terminal de fósforo ámbar: fondo casi negro #0c0d0c, tinta gris verdosa #d7dcd5, un único acento ámbar #ffaf00 para la acción principal y el prompt. Una sola familia monoespaciada (JetBrains Mono) en todo. Superficies separadas por líneas rectas de 1 px y escalones de tono, esquinas cuadradas siempre. Sin imágenes, sin sombras en reposo, sin burbujas, sin emoji."
 surface: herramienta
 
 colors:
@@ -100,6 +100,12 @@ components:
 > Generado con la skill `design-md`. Manda sobre el manifiesto en todo lo visual (precedencia §0).
 
 ## Overview
+
+> **Dos modos (desde 2026-11).** El **feed** va en modo **pop** (§ Feed pop): colorido, redondo y
+> dinámico, con celebraciones, para que dé la dopamina que daría el scroll. Adulto, no infantil:
+> lo "para niños" es el nivel de la explicación (§ Vídeos en CLAUDE.md), nunca el aspecto. **Rutas, lección
+> y stats** siguen en modo **terminal** (todo lo demás de este documento). Las reglas de
+> esquinas cuadradas, un solo acento y sin emoji aplican solo al modo terminal.
 
 Student sustituye el scroll de redes sociales por estudio. Es una PWA para el móvil y la usa una sola
 persona, muchas veces al día y en ratos cortos. Superficie: **herramienta**. Tiene que abrir rápido,
@@ -222,7 +228,41 @@ código sobre `surface-1` con borde izquierdo `hairline`. Tipo de tarjeta en el 
 Botones de consulta preparada (secundarios). La salida va en un `<pre>` sobre `surface-1` en `small`,
 con scroll horizontal propio dentro del bloque (nunca de la página).
 
+## Feed pop
+
+Petición explícita del usuario: el feed era demasiado denso; lo quiere "más colorinchis, más
+dinámico, más como para niños, sin dejar de explicar conceptos avanzados". Aclaración posterior:
+"para niños" es el **nivel de la explicación**, no la estética; nada de dibujos infantiles, mascotas,
+caras ni emoji en botones. Vive en
+`src/styles/pop.css` bajo la clase `.pop` (la pone `Feed.tsx` en cada `.feed-item`; `CardView`
+cambia textos y cabecera con `inFeed`).
+
+- **Color por tarjeta.** `--hue` en oklch, rotando rosa 350, violeta 300, azul 255, cian 200,
+  verde 150, naranja 40. Todo sale de ese tono: `--pop-bg`, `--pop-surface`, `--pop-ink`,
+  `--pop-muted`, `--pop-line`, `--pop-accent`, `--pop-accent-deep`, `--pop-on-accent`. Oscuro:
+  fondos profundos (L 0.27) y acento claro con texto oscuro. Claro: pasteles (L 0.94) y acento
+  L 0.52 con texto blanco. Acierto verde 150, fallo rojo 25, independientes del tono.
+- **Forma.** Radio 16 px en botones, 20–24 px en paneles e imagen, pastillas a 999 px. Botones
+  con canto sólido (`box-shadow: 0 5px 0 accent-deep`) que se hunde 4 px al pulsar.
+- **Letra.** Space Grotesk Variable (OFL, `@fontsource-variable/space-grotesk`), 17 px cuerpo,
+  27 px/700 títulos. Código y SQL siguen en JetBrains Mono.
+- **Cabecera.** Pastilla con emoji + tipo (`🎬 vídeo`, `🧠 quiz`, `🐛 caza el fallo`, `⚡ flash`,
+  `🧪 lab`, `📖 idea`) y el título de la lección. Repaso: pastilla `🔁 repaso`.
+- **Vídeo.** Imagen redondeada a casi toda la pantalla, barras por escena arriba (tipo stories),
+  subtítulo blanco de 26 px/700 encima de la imagen y la palabra que suena en amarillo, un
+  pelín más grande. Al terminar: `Visto · desliza ↓`.
+- **Celebración.** Acierto: la opción se pone verde con un rebote y salta confeti (14 piezas,
+  760 ms). Fallo: rojo y sacudida de 380 ms. Flash: la respuesta entra con un giro. Emoji solo en
+  la pastilla del tipo de tarjeta.
+- **Movimiento.** Muelle `cubic-bezier(0.34, 1.56, 0.64, 1)` para entradas (≤ 420 ms) y para la
+  tarjeta al llegar a ella. Con `prefers-reduced-motion` no hay confeti, rebotes ni sacudidas.
+- **Imágenes.** `IMAGE_STYLE`: ilustración vectorial plana moderna y editorial, paleta saturada
+  (magenta, azul eléctrico, turquesa, amarillo, violeta), sin personajes con cara ni mascotas.
+
 ## Do's and Don'ts
+
+Lo que sigue aplica al **modo terminal** (todo menos el feed).
+
 
 ### Do
 - Separar todo con líneas rectas de 1 px (`hairline`).

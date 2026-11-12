@@ -6,7 +6,7 @@ summary: Dónde viven los datos analíticos, qué es Parquet y por qué todo el 
 
 ## video: Data warehouse
 
-> Un data warehouse es una base de datos pensada para analítica: tablas con esquema, consultas en SQL, y almacenamiento separado del cómputo. BigQuery, Snowflake y Redshift son warehouses.
+> Un data warehouse es una base de datos hecha para analizar. Tablas con esquema, consultas en SQL, y un truco: el almacenamiento va por un lado y el cómputo por otro. BigQuery, Snowflake y Redshift son warehouses.
 % A clean modern warehouse building with neatly labeled shelves of identical boxes
 % A warehouse building split in two halves: storage shelves on one side, a separate engine room with gears on the other
 
@@ -19,7 +19,7 @@ summary: Dónde viven los datos analíticos, qué es Parquet y por qué todo el 
 
 ---
 
-> El proveedor gestiona los archivos, la compresión y el reparto entre máquinas, y tú solo ves tablas. La ventaja: cero mantenimiento y SQL rápido sobre volúmenes enormes. La pega: los datos quedan en el formato propio del proveedor, y solo los lee su motor.
+> El proveedor se encarga de los archivos, la compresión y el reparto entre máquinas. Tú solo ves tablas. ¡Cero mantenimiento y SQL rápido sobre montañas de datos! ¿La pega? Los datos quedan en su formato propio, y solo los lee su motor. Como una caja fuerte que solo abre su llave.
 % Robotic arms automatically compressing and arranging boxes across several connected warehouse halls
 % A single locked vault door with a proprietary keyhole guarding the boxes inside
 
@@ -31,7 +31,7 @@ summary: Dónde viven los datos analíticos, qué es Parquet y por qué todo el 
 
 ## video: Data lake
 
-> Un data lake es almacenamiento de objetos barato, el de cualquier nube, donde se dejan archivos en cualquier formato. El esquema se decide al leer, no al escribir. Flexible, y muy barato por terabyte.
+> Un data lake es un trastero enorme y barato en la nube. Echas archivos en cualquier formato, y el esquema lo decides al leer, no al guardar. Flexible, y baratísimo por terabyte.
 % A calm lake seen from above with many different floating objects: files, documents, images, logs
 % A fisherman pulling an item from the lake and deciding its shape only when it is out of the water
 
@@ -43,7 +43,7 @@ summary: Dónde viven los datos analíticos, qué es Parquet y por qué todo el 
 
 ---
 
-> El problema clásico es el pantano de datos: miles de archivos sin dueño ni documentación, sin transacciones, y sin forma fácil de actualizar o borrar una sola fila.
+> ¿El peligro? Que el trastero se convierta en un pantano de datos: miles de archivos sin dueño ni etiqueta, sin transacciones, y sin forma fácil de cambiar o borrar una sola fila.
 % A murky swamp full of tangled floating files with no labels
 % Two cranes dropping objects into the same spot of a swamp, objects colliding and breaking
 
@@ -55,7 +55,7 @@ summary: Dónde viven los datos analíticos, qué es Parquet y por qué todo el 
 
 ## video: Formatos de archivo que tienes que conocer
 
-> CSV y JSON sirven para intercambiar, nada más. Avro guarda por filas, en binario y con esquema: ideal para escribir eventos uno a uno. Parquet guarda por columnas y comprimido: el formato de la analítica.
+> CSV y JSON sirven para pasarse datos, y poco más. Avro guarda por filas, en binario y con su esquema: perfecto para ir apuntando eventos uno a uno. Parquet guarda por columnas y comprimido: es el formato de la analítica.
 % Three kinds of containers side by side: a loose paper envelope, a sealed horizontal capsule, and a block of compressed vertical tubes
 % A stream of small capsules being written one after another onto a conveyor belt
 
@@ -67,7 +67,7 @@ summary: Dónde viven los datos analíticos, qué es Parquet y por qué todo el 
 
 ---
 
-> El truco de Parquet: guarda el mínimo y el máximo de cada columna por bloque. Si el filtro cae fuera de ese rango, el motor se salta el bloque entero sin leerlo. Es la misma idea que un warehouse columnar, pero en un archivo abierto.
+> El truco de Parquet: en cada bloque apunta el mínimo y el máximo de cada columna, como la etiqueta de una caja de mudanza. Si buscas algo que cae fuera de ese rango, ¡ni la abres! Es la idea de un warehouse columnar, pero en un archivo abierto.
 % A block of vertical tubes divided into stacked segments, each segment with a small min and max gauge on its side
 % A reader skipping entire segments of a tube stack, reading only one segment highlighted amber
 
@@ -83,7 +83,7 @@ WHERE fecha = '2025-02-10'
 
 ## video: Lakehouse y formatos de tabla
 
-> Un lakehouse es un lake que se comporta como un warehouse. El truco es un formato de tabla encima de los Parquet: Iceberg, Delta Lake o Hudi. Añaden metadatos que dicen qué archivos forman la tabla en cada momento.
+> Un lakehouse es un lake que se porta como un warehouse. ¿Cómo? Con un formato de tabla encima de los Parquet: Iceberg, Delta Lake o Hudi. Son como el índice de un álbum: dicen qué archivos forman la tabla en cada momento.
 % A house built on stilts over a lake, with an orderly warehouse interior
 % A thin glowing ledger layer floating above many file blocks, with lines pointing to the blocks that belong to the table
 
@@ -97,7 +97,7 @@ Parquet  Parquet  Parquet  …
 
 ---
 
-> Con eso tienes transacciones, cambios de esquema sin reescribirlo todo, consultar la tabla tal como estaba ayer, y varios motores leyendo los mismos datos. Iceberg es hoy el estándar de facto: datos en un formato abierto que no te ata a un proveedor.
+> Con eso consigues transacciones, cambiar el esquema sin reescribirlo todo, ver la tabla tal como estaba ayer, y varios motores leyendo los mismos datos. Hoy Iceberg es el estándar de facto: un formato abierto que no te ata a ningún proveedor.
 % A shield over a stack of files, two writers waiting in line instead of colliding
 % A clock rewinding next to an earlier snapshot of the same stack of files
 % Several different machines plugged into the same lake of files at once
@@ -109,7 +109,7 @@ Parquet  Parquet  Parquet  …
 
 ## video: Crudo en el warehouse no es un lake
 
-> Confusión muy común: cargar los datos crudos en el warehouse, tal como llegan, y llamar a esa zona el lake. Es un patrón razonable, se llama ELT. Pero sigue siendo un warehouse.
+> Una confusión muy común: cargar los datos crudos en el warehouse, tal cual llegan, y llamar a esa zona el lake. Ojo, el patrón es bueno, se llama ELT. Pero eso sigue siendo un warehouse, no un lake.
 % Raw unsorted parcels dumped into a corner of a tidy warehouse with a wrong signpost pointing at them
 % A warehouse building next to a lake, clearly separate, with a fence between them
 
@@ -119,7 +119,7 @@ Parquet  Parquet  Parquet  …
 
 ---
 
-> Los dos mundos se tocan: casi todos los warehouses pueden leer archivos del lake sin cargarlos, con tablas externas, incluidas tablas Iceberg. La frase precisa es: cargamos el crudo en el warehouse y transformamos dentro.
+> Eso sí, los dos mundos se tocan: casi todos los warehouses pueden leer archivos del lake sin cargarlos, con tablas externas, incluso tablas Iceberg. La frase correcta es: cargamos el crudo en el warehouse y transformamos dentro.
 % A long pipe reaching from a warehouse into a lake, reading files without moving them
 % Raw parcels entering a warehouse and being transformed inside by machines into neat boxes
 

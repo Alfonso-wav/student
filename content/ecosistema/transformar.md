@@ -6,7 +6,7 @@ summary: Del caos de consultas programadas a transformaciones versionadas, teste
 
 ## video: El problema que resuelve dbt
 
-> Situación típica: decenas de vistas y consultas programadas en el warehouse. Unas dependen de otras, pero eso solo está en la cabeza de quien las escribió. No hay tests, y el SQL no está en git.
+> Situación típica: decenas de vistas y consultas programadas en el warehouse. Unas dependen de otras, pero eso solo lo sabe quien las escribió… y está de vacaciones. No hay tests, y el SQL no está en git. Un castillo de naipes.
 % A messy tangle of pipes connecting many unlabeled boxes, nobody knows which feeds which
 % A worker scratching their head in front of a tangle of pipes with a missing map
 
@@ -19,7 +19,7 @@ sin tests · sin git · sin dependencias
 
 ---
 
-> dbt lo convierte en un proyecto de software. Cada modelo es un archivo con un SELECT. Al referenciar otros modelos con ref, dbt deduce las dependencias y ejecuta en orden. Añade tests, documentación y linaje, todo en git. No mueve datos: genera SQL y lo ejecuta en el warehouse.
+> dbt lo convierte en un proyecto de software. Cada modelo es un archivo con un SELECT. Cuando uno usa a otro con ref, dbt dibuja las dependencias y ejecuta en orden, como fichas de dominó. Añade tests, documentación y linaje, todo en git. Ojo: no mueve datos. Genera SQL y lo ejecuta en el warehouse.
 % Neat labeled modules connected by clear arrows forming an ordered graph
 % A checklist with check marks next to an ordered graph of modules, stored in a version-control tree
 
@@ -36,7 +36,7 @@ JOIN {{ ref('stg_clientes') }} c
 
 ## video: Dataform, el dbt de Google
 
-> Dataform es la herramienta equivalente de Google, integrada en la consola de BigQuery. Modelos en archivos punto sqlx, dependencias con ref, tests llamados assertions y ejecuciones programadas.
+> Dataform es la versión de Google, metida en la consola de BigQuery. Mismas ideas con otros nombres: modelos en archivos punto sqlx, dependencias con ref, tests llamados assertions y ejecuciones programadas.
 % A neat graph of modules embedded inside a large console window of a cloud warehouse
 % Small assertion checkmarks attached to modules in a graph, with a clock scheduling runs
 
@@ -47,7 +47,7 @@ definitions/fct_pedidos.sqlx
 
 ---
 
-> ¿Cuál elegir? Dataform es nativo y sin infraestructura extra, pero solo encaja si todo vive en BigQuery. dbt es el estándar del sector, portable a cualquier warehouse, y lo que más verás en ofertas. Los conceptos son idénticos: si sabes uno, sabes el otro.
+> ¿Cuál elegir? Dataform viene de serie y sin infraestructura extra, pero solo encaja si todo vive en BigQuery. dbt es el estándar del sector, funciona con cualquier warehouse y es el que más verás en ofertas. Buena noticia: si sabes uno, sabes el otro.
 % Two nearly identical toolboxes side by side, one locked to a single building and one with wheels that can travel
 % Two toolboxes producing the same graph of modules, showing the same concepts
 
@@ -56,7 +56,7 @@ definitions/fct_pedidos.sqlx
 
 ## video: Capas de transformación
 
-> Casi todos los proyectos ordenan los modelos en tres capas. Staging: una vista por tabla fuente, para renombrar, tipar y limpiar, sin lógica de negocio. Intermediate: uniones y cálculos reutilizables. Marts: tablas listas para negocio.
+> Casi todos los proyectos ordenan los modelos en tres capas, como una cocina. Staging: lavar y cortar, una vista por tabla fuente para renombrar, tipar y limpiar. Intermediate: preparaciones que se reutilizan, uniones y cálculos. Marts: el plato listo para negocio.
 % Raw stones entering the bottom floor of a three-floor factory and being washed and sorted
 % The middle floor of a factory joining sorted pieces into reusable parts
 % The top floor of a factory displaying finished polished products on clean shelves
@@ -73,7 +73,7 @@ marts         fct_pedidos, dim_…
 
 ---
 
-> Medallion, con bronce, plata y oro, es el mismo concepto con el nombre que popularizó Databricks. Y la regla de oro: el BI solo lee de marts. Si un dashboard lee de staging, la lógica de negocio acaba duplicada en el BI.
+> Medallion, con bronce, plata y oro, es la misma idea con el nombre que popularizó Databricks. Y la regla de oro: el BI solo come de marts. Si un dashboard lee de staging, la lógica de negocio acaba copiada en el BI.
 % A three-floor factory where each floor is tinted a different metal tone, bronze at the bottom, silver in the middle, gold on top, plain surfaces without engravings
 % A dashboard screen connected only to the top floor of a factory, with the lower floors closed off
 
@@ -87,7 +87,7 @@ marts         fct_pedidos, dim_…
 
 ## video: Spark y Databricks
 
-> Spark es un motor de procesamiento distribuido: reparte el trabajo entre muchas máquinas de un clúster, y se programa en Python, Scala o SQL. Aparece con archivos crudos enormes, machine learning, lógica muy procedural, o en lakehouses sin warehouse.
+> Spark es un motor distribuido: reparte el trabajo entre muchas máquinas, como un equipo de mudanza grande. Se programa en Python, Scala o SQL. Sale cuando hay archivos crudos enormes, machine learning, lógica muy paso a paso, o lakehouses sin warehouse.
 % One big job split into pieces and distributed to many small computers in a cluster
 % A cluster of computers processing a huge pile of raw files
 
@@ -99,7 +99,7 @@ marts         fct_pedidos, dim_…
 
 ---
 
-> Con un warehouse como BigQuery o Snowflake, Spark rara vez hace falta para transformar: el warehouse ya es un motor distribuido, solo que escribes SQL y no gestionas el clúster.
+> Pero con un warehouse como BigQuery o Snowflake, Spark casi nunca hace falta para transformar. ¡El warehouse ya es un motor distribuido! Solo que tú escribes SQL y no cuidas ningún clúster.
 % A large warehouse with a built-in engine room doing distributed work, no cluster to manage
 % A person writing a short query on a card that powers a big warehouse engine
 
@@ -111,7 +111,7 @@ warehouse = motor distribuido
 
 ## video: El renacimiento de una sola máquina
 
-> DuckDB, una especie de SQLite para analítica, y Polars, dataframes escritos en Rust, procesan decenas de gigas en un portátil en segundos. Mucho de lo que hace diez años necesitaba un clúster cabe hoy en una sola máquina.
+> DuckDB, algo así como SQLite para analítica, y Polars, dataframes escritos en Rust, procesan decenas de gigas en un portátil, en segundos. Mucho de lo que hace diez años pedía un clúster, hoy cabe en una sola máquina.
 % A single laptop easily lifting a large pile of data blocks
 % A huge old cluster of servers shrinking into one single laptop
 
@@ -121,7 +121,7 @@ warehouse = motor distribuido
 
 ---
 
-> La mayoría de las empresas no tiene big data: tiene datos medianos y una factura de nube grande. Saber decir esto lo hace DuckDB en una función, en vez de montemos Spark, es criterio de senior.
+> La mayoría de las empresas no tiene big data: tiene datos medianos y una factura de nube grande. Saber decir esto lo hace DuckDB en una función, en vez de montemos Spark: eso es criterio.
 % A small tidy pile of data next to a very long cloud bill receipt
 % A small duck-shaped tool next to a giant spark machine, the small tool chosen
 

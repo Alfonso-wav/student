@@ -274,6 +274,16 @@ export function VideoView({ card, active, inFeed }: Props) {
   const filled = Math.round(overall * BAR_WIDTH)
   const label = { idle: 'play', playing: 'pausa', paused: 'seguir', done: 'otra vez' }[phase]
 
+  const subtitle = (
+    <p className="video-sub" aria-live="off" key={`${scene}-${chunk}`}>
+      {words.slice(chunks[chunk], chunkEnd).map((w, k) => (
+        <span key={k} className={chunks[chunk] + k === word ? 'is-now' : ''}>
+          {w}{' '}
+        </span>
+      ))}
+    </p>
+  )
+
   return (
     <div className={`video ${inFeed ? 'is-feed' : ''} ${phase === 'playing' ? 'is-playing' : ''}`} ref={root}>
       {/* Tocar la imagen equivale al botón principal (que es el control accesible). */}
@@ -288,18 +298,26 @@ export function VideoView({ card, active, inFeed }: Props) {
             decoding="async"
           />
         ))}
-        {!started && phase !== 'done' && <span className="video-hint">▶ toca para empezar</span>}
-      </div>
-      <p className="video-sub" aria-live="off" key={`${scene}-${chunk}`}>
-        {words.slice(chunks[chunk], chunkEnd).map((w, k) => (
-          <span key={k} className={chunks[chunk] + k === word ? 'is-now' : ''}>
-            {w}{' '}
+        {inFeed && (
+          // Una barra por escena, como las stories: llenas las vistas, la actual avanza.
+          <span className="video-segs">
+            {card.scenes.map((_, i) => (
+              <span key={i} className="video-seg">
+                <span
+                  style={{ transform: `scaleX(${phase === 'done' || i < scene ? 1 : i === scene ? progress : 0})` }}
+                />
+              </span>
+            ))}
           </span>
-        ))}
-      </p>
+        )}
+        {!started && phase !== 'done' && <span className="video-hint">▶ toca para empezar</span>}
+        {inFeed && phase === 'done' && <span className="video-done">Visto · desliza ↓</span>}
+        {inFeed && started && subtitle}
+      </div>
+      {!inFeed && subtitle}
       <div className="video-controls">
         <button type="button" className="btn-primary" onClick={toggle}>
-          {label}
+          {inFeed ? `${{ idle: '▶', playing: '❚❚', paused: '▶', done: '↺' }[phase]} ${label}` : label}
         </button>
         <button type="button" className="btn-secondary" onClick={() => go(-1)} disabled={scene === 0} aria-label="Escena anterior">
           ←
@@ -317,15 +335,19 @@ export function VideoView({ card, active, inFeed }: Props) {
           {speed}x
         </button>
       </div>
-      <p className="video-bar tnum" aria-label={`Escena ${scene + 1} de ${total}`}>
-        <span className="video-track" aria-hidden="true">
-          <span className="video-fill">{'█'.repeat(filled)}</span>
-          {'░'.repeat(BAR_WIDTH - filled)}
-        </span>{' '}
-        {scene + 1}/{total}
-        {fallback && ' · voz del navegador'}
-        {phase === 'done' && <span className="ok"> · exit 0{inFeed ? ' · desliza ↓' : ''}</span>}
-      </p>
+      {inFeed ? (
+        fallback && <p className="video-bar">voz del navegador</p>
+      ) : (
+        <p className="video-bar tnum" aria-label={`Escena ${scene + 1} de ${total}`}>
+          <span className="video-track" aria-hidden="true">
+            <span className="video-fill">{'█'.repeat(filled)}</span>
+            {'░'.repeat(BAR_WIDTH - filled)}
+          </span>{' '}
+          {scene + 1}/{total}
+          {fallback && ' · voz del navegador'}
+          {phase === 'done' && <span className="ok"> · exit 0</span>}
+        </p>
+      )}
       <p className="sr-only">{plainNarration(current.narration)}</p>
       {!inFeed && current.screen && (
         <details className="video-notes">

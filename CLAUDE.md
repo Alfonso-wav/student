@@ -1,8 +1,9 @@
 # Student
 
 PWA personal anti-scroll: feed de tarjetas + rutas de estudio. Vite + React + TS, sin backend, GitHub
-Pages. Diseño: `DESIGN.md` manda en todo lo visual (terminal, esquinas cuadradas, líneas rectas, sin
-burbujas, un acento ámbar). Antes de tocar UI, leer `DESIGN.md`; después, `visual-qa` de alfo-design.
+Pages. Diseño: `DESIGN.md` manda en todo lo visual. Dos modos: el **feed** en modo pop (colorido,
+redondo, celebraciones, adulto; `src/styles/pop.css`) y el resto en modo terminal (esquinas cuadradas,
+un acento ámbar). Antes de tocar UI, leer `DESIGN.md`; después, `visual-qa` de alfo-design.
 
 ## Usuario
 
@@ -70,13 +71,18 @@ Reglas de contenido:
 
 ## Vídeos (voz, imágenes y subtítulos)
 
-Tarjeta `video`: una idea, 30–60 s. Escenas ≤ 400 caracteres de voz, ≤ 950 en total, y ≥ 2
-imágenes por escena. El feed son vídeos con una práctica (quiz/flash) cada 3; los conceptos se
-escriben como vídeo, no como `concept`. Nada de líneas que empiecen por `>` o `%` en los apuntes.
+Tarjeta `video`: una idea, 30–60 s. **Tono:** explicado como para un niño (el nivel, no la estética)
+pero sin rebajar el concepto: frases cortas, una analogía cotidiana por idea (GPS, libro con
+índice, pósits, botón de deshacer), exclamaciones y preguntas, nada de párrafos de manual. El
+término técnico real sale siempre. Prompts de imagen: una metáfora concreta de objetos o escenas,
+sin personajes con cara ni mascotas.
+
+Escenas ≤ 400 caracteres de voz, ≤ 950 en total, y ≥ 2 imágenes por escena. El feed son vídeos con
+una práctica (quiz/flash) cada 3; los conceptos se escriben como vídeo, no como `concept`. Nada de líneas que empiecen por `>` o `%` en los apuntes.
 
 Todo se genera en local (GPU NVIDIA, `uv`, `ffmpeg`) y se commitea; `npm test` falla si falta algo.
 
-- `npm run tts`: voz con Chatterbox Multilingual es-ES clonando `tools/tts/voz-referencia.wav` →
+- `npm run tts`: voz con Chatterbox Multilingual es-ES clonando `tools/tts/voz-referencia.wav` (no se commitea: va en `.gitignore`) →
   `public/audio/<hash>.m4a`, comprobada con Whisper, y tiempos por palabra para los subtítulos →
   `public/audio/<hash>.json`. Solo lo nuevo o cambiado.
 - `npm run images`: Z-Image Turbo (Apache 2.0, bf16 guardado en fp8 para caber en 12 GB) →

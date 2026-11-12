@@ -6,7 +6,7 @@ summary: Funciones en el WHERE, índices de expresión y estimaciones que miente
 
 ## video: Un índice indexa una expresión exacta
 
-> Un índice B-tree sobre email guarda los valores de email ordenados. Si la consulta pregunta por lower de email, para Postgres es otra expresión: el índice no sabe nada de ella y no lo puede usar. Pasa igual con funciones de fecha, conversiones de tipo o cálculos sobre la columna.
+> Un índice B-tree sobre email es una lista de emails ordenada, como una agenda. Pero si preguntas por lower de email, para Postgres es otra cosa: la agenda no está ordenada así, y no la puede usar. Pasa igual con funciones de fecha, cambios de tipo o cálculos sobre la columna.
 % An alphabetized card catalog of email cards, and a person asking for a lowercase version that is not in the catalog
 % A key that does not fit a slightly different lock shape
 
@@ -19,7 +19,7 @@ WHERE id::text = '42'
 
 ---
 
-> Dos arreglos. Reescribir el filtro para que la columna quede sola, o crear un índice de expresión. Es la causa más común de tengo índice y no lo usa, y un patrón que el SQL generado por IA repite mucho.
+> Dos arreglos. Reescribir el filtro para que la columna quede sola, sin nada encima. O crear un índice de expresión: una agenda ordenada por lower de email. Es la causa número uno de tengo índice y no lo usa, y el SQL generado por IA lo repite mucho.
 % A filter rewritten so the plain column matches the catalog directly, amber arrow hitting the card
 % A second catalog built specifically for the lowercase version, the key now fits
 

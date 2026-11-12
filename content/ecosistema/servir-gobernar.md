@@ -6,7 +6,7 @@ summary: Capa semántica, tests y observabilidad de datos, linaje, contratos y s
 
 ## video: La capa semántica
 
-> Pregunta en una reunión: cuántos clientes activos tenemos. Tres dashboards, tres números. Uno cuenta quien compró en treinta días, otro en noventa, y otro incluye pedidos cancelados.
+> Reunión. Pregunta: ¿cuántos clientes activos tenemos? Tres dashboards, tres números. Uno cuenta a quien compró en treinta días, otro en noventa, y otro mete pedidos cancelados. ¿Cuál dice la verdad?
 % A meeting table with three screens showing three different numbers for the same question
 % Three slightly different measuring rulers measuring the same object
 
@@ -19,7 +19,7 @@ C: incluye pedidos cancelados
 
 ---
 
-> Una capa semántica define cada métrica una vez, con su fórmula, filtros y dimensiones, y todos la usan. Puede vivir dentro del BI o fuera, para todos. Casi nunca es un problema técnico: son definiciones duplicadas.
+> Una capa semántica es el diccionario oficial: define cada métrica una vez, con su fórmula, filtros y dimensiones, y todo el mundo la usa. Puede vivir dentro del BI o fuera, para todos. Casi nunca es un problema técnico: son definiciones repetidas.
 % One single master ruler in the center feeding identical measurements to many screens
 % Several dashboards all connected to one shared definition book
 
@@ -30,7 +30,7 @@ C: incluye pedidos cancelados
 
 ## video: Calidad y observabilidad de datos
 
-> Dos capas complementarias. Primero, tests en el pipeline, que paran la ejecución si fallan: claves únicas, nulos donde no debe haberlos, integridad referencial, valores aceptados.
+> Dos capas que se ayudan. Primera: tests en el pipeline, como el control de calidad de una fábrica que para la cinta si algo falla. Claves únicas, nulos donde no toca, relaciones rotas, valores no permitidos.
 % A checkpoint gate on a pipeline stopping a defective parcel
 % Inspectors with checklists verifying parcels on a conveyor
 
@@ -41,7 +41,7 @@ C: incluye pedidos cancelados
 
 ---
 
-> Segundo, observabilidad, que vigila lo que no sabías que tenías que testear: frescura, volumen, esquema y distribución. El peor fallo de datos no es el que rompe un pipeline, sino el que no rompe nada y deja números falsos durante semanas.
+> Segunda: observabilidad, una alarma para lo que no sabías que tenías que mirar: frescura, volumen, esquema y distribución. El peor fallo no es el que rompe el pipeline. Es el que no rompe nada… y deja números falsos durante semanas.
 % A dashboard of four gauges watching a pipeline: clock, volume meter, structure, distribution
 % A calm-looking pipeline secretly delivering wrong parcels for weeks, dust on top
 
@@ -54,7 +54,7 @@ C: incluye pedidos cancelados
 
 ## video: Linaje y catálogo
 
-> El linaje es el mapa de dónde sale cada tabla y columna, y quién la usa aguas abajo. Responde a la pregunta clave antes de un cambio: si toco esta columna, qué dashboards se rompen.
+> El linaje es el árbol genealógico de los datos: de dónde sale cada tabla y columna, y quién la usa después. Responde lo importante antes de un cambio: si toco esta columna, ¿qué dashboards se rompen?
 % A map of connected tables flowing downstream like a river delta into dashboards
 % One column highlighted amber at the source and all downstream dashboards it affects lit up
 
@@ -69,7 +69,7 @@ fct_ventas ─┬─► dashboard ventas
 
 ---
 
-> Un catálogo de datos junta linaje, descripciones, dueños, clasificación, por ejemplo si contiene datos personales, y búsqueda. Y si transformas con dbt o Dataform, el linaje de sus modelos sale gratis.
+> Un catálogo de datos es la biblioteca: junta linaje, descripciones, dueños, clasificación, por ejemplo si hay datos personales, y un buscador. Y si transformas con dbt o Dataform, el linaje de sus modelos te sale gratis.
 % A library catalog drawer with cards linking to tables, owners and sensitivity labels
 % A search magnifier over a catalog of tables with lineage lines between them
 
@@ -80,7 +80,7 @@ fct_ventas ─┬─► dashboard ventas
 
 ## video: Contratos de datos
 
-> El origen de muchos incendios: el equipo de la app renombra una columna o cambia su significado, y el pipeline se rompe. O peor: no se rompe, y miente.
+> El origen de muchos incendios: el equipo de la app renombra una columna o cambia lo que significa, y el pipeline se rompe. O peor: no se rompe, y miente.
 % An app team renaming a label on a box while a pipeline downstream breaks
 % A pipeline quietly returning empty results with no alarm
 
@@ -94,7 +94,7 @@ pipeline:
 
 ---
 
-> Un contrato de datos es un acuerdo explícito y versionado entre quien produce los datos y quien los consume: esquema, significado, frescura y cómo se avisa de los cambios. Lo ideal es comprobarlo en la integración continua del productor, para que un cambio que lo rompe no se pueda desplegar.
+> Un contrato de datos es un acuerdo por escrito, con versiones, entre quien produce los datos y quien los usa: esquema, significado, frescura y cómo se avisa de los cambios. Lo ideal es comprobarlo en la integración continua del productor: si un cambio lo rompe, no se puede desplegar.
 % A signed contract document between two buildings, a producer and a consumer
 % An automated gate blocking a deployment that would break the contract
 
@@ -109,7 +109,7 @@ Comprobado en el CI del productor
 
 ## video: Gobernanza y seguridad en el warehouse
 
-> Mínimo privilegio: roles por esquema, no administrador para todo el mundo. Seguridad por columna, para que el email solo lo vea quien debe. Seguridad por fila, para que cada delegación vea solo sus datos. Y enmascaramiento dinámico de datos personales.
+> Cada uno, la llave justa. Mínimo privilegio: roles por esquema, no administrador para todos. Seguridad por columna, para que el email solo lo vea quien debe. Por fila, para que cada delegación vea solo lo suyo. Y enmascaramiento dinámico de datos personales.
 % Keys of different sizes opening only specific doors in a warehouse
 % A table where one column is covered by a mask and some rows are hidden behind frosted glass
 
@@ -120,7 +120,7 @@ Comprobado en el CI del productor
 
 ---
 
-> Y el RGPD: el derecho de supresión obliga a poder borrar a una persona de todas partes, crudo y copias de seguridad incluidos. En tablas de solo inserción, eso hay que diseñarlo desde el principio.
+> Y el RGPD: el derecho de supresión obliga a poder borrar a una persona de todas partes, crudo y copias de seguridad incluidos. En tablas donde solo se inserta, eso hay que pensarlo desde el primer día.
 % A person's silhouette being erased from raw files, finished tables and backup tapes
 % An architect drawing a deletion path on blueprints before building a warehouse
 

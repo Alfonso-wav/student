@@ -9,7 +9,7 @@
  * Sube este número al cambiar la voz de referencia, el modelo o los parámetros de generación:
  * cambia todas las claves y `npm run tts` lo regenera todo.
  */
-export const VOICE_VERSION = 'chatterbox-es-es/ref1'
+export const VOICE_VERSION = 'chatterbox-es-es/ref2-chisi-ex07-cfg03'
 
 /**
  * Pronunciación de términos técnicos. El guion se escribe normal (`Seq Scan`) y el TTS recibe la
@@ -31,6 +31,7 @@ export const LEXICON: [string, string][] = [
   ['Bitmap Index Scan', 'bítmap índex scan'],
   ['B-tree', 'bi tri'],
   ['VACUUM', 'vácum'],
+  ['rollback', 'rólbak'],
   ['MVCC', 'eme uve ce ce'],
   ['WAL', 'güal'],
   ['DELETE', 'dilít'],
@@ -175,10 +176,11 @@ export function subtitleChunks(words: string[], maxChars = 34): number[] {
  * Estilo común de todas las imágenes. Se añade a cada prompt; cambiarlo (o subir IMAGE_VERSION)
  * regenera todas con `npm run images`.
  */
-export const IMAGE_VERSION = 'zimage-turbo/v1'
+export const IMAGE_VERSION = 'zimage-turbo/v3'
 export const IMAGE_STYLE =
-  'Minimalist editorial illustration, flat vector, thin amber orange line art and pale grey-green shapes ' +
-  'on a near-black background, lots of negative space, clean geometric shapes, no text, no letters, no numbers, no logos'
+  'Bold modern flat vector illustration, vibrant saturated palette (magenta, electric blue, teal, sunny yellow, violet) ' +
+  'on a soft solid background, clean geometric shapes, subtle grain texture, sophisticated editorial style for adults, ' +
+  'no characters with faces, no text, no letters, no numbers, no logos'
 
 export function imagePrompt(prompt: string): string {
   return `${prompt.replace(/\.?\s*$/, '.')} ${IMAGE_STYLE}`

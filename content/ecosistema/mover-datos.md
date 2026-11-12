@@ -6,7 +6,7 @@ summary: Cómo llega el dato de la base de la app al warehouse, y las formas de 
 
 ## video: ETL contra ELT
 
-> ETL: extraes, transformas en un servidor intermedio, y cargas el resultado limpio. ELT: extraes, cargas en crudo, y transformas después dentro del warehouse, con SQL.
+> Dos recetas para mover datos. ETL: extraes, transformas en un servidor intermedio, y cargas el resultado ya limpio. ELT: extraes, cargas en crudo, y transformas después, dentro del warehouse, con SQL. ¡Mismas letras, distinto orden!
 % Parcels being unpacked and cleaned in a small workshop on the road before reaching a warehouse
 % Raw parcels going straight into a big warehouse and being cleaned inside by large machines
 
@@ -22,7 +22,7 @@ origen ─► warehouse ─► SQL dentro
 
 ---
 
-> ELT ganó con los warehouses en la nube: su cómputo es enorme y elástico, el crudo sigue ahí para reprocesar si cambia la lógica, y la transformación es SQL versionable. ETL sigue teniendo sentido para quitar datos personales antes de que entren, o con formatos que el warehouse no sabe leer.
+> ELT ganó con los warehouses en la nube. Su cómputo es enorme y elástico. El crudo sigue ahí, por si cambia la lógica y hay que rehacer. Y la transformación es SQL que puedes versionar. ¿Y ETL? Sigue sirviendo para quitar datos personales antes de que entren, o para formatos que el warehouse no sabe leer.
 % A huge elastic machine inside a warehouse stretching to process many parcels at once
 % A shelf of raw parcels kept intact next to processed ones, ready to be processed again
 % A filter removing personal identity cards from parcels before they enter a warehouse gate
@@ -37,7 +37,7 @@ origen ─► warehouse ─► SQL dentro
 
 ## video: Batch o streaming
 
-> En batch mueves datos por lotes, cada hora o cada día: simple, barato y fácil de reprocesar. En streaming cada evento fluye en segundos, pero aparecen problemas nuevos: orden, duplicados, datos que llegan tarde y estado.
+> En batch mueves datos por lotes, cada hora o cada día, como el camión del reparto: simple, barato y fácil de repetir. En streaming cada evento fluye en segundos, como una cinta transportadora. Pero trae problemas nuevos: orden, duplicados, datos que llegan tarde y estado.
 % A big truck leaving once a day full of parcels
 % A continuous fast stream of tiny parcels on a conveyor, some out of order and some duplicated
 
@@ -46,7 +46,7 @@ origen ─► warehouse ─► SQL dentro
 
 ---
 
-> La pregunta senior no es qué es más moderno, sino qué latencia necesita de verdad quien consume el dato. Si el dashboard se mira una vez al día, el streaming es coste sin beneficio. Fraude o stock en tiempo real sí lo justifican.
+> La pregunta buena no es ¿qué es más moderno?, sino ¿cuánta prisa tiene de verdad quien usa el dato? Si el dashboard se mira una vez al día, el streaming es gastar sin ganar nada. El fraude o el stock en tiempo real sí lo justifican.
 % A person reading a printed dashboard once in the morning with a coffee cup
 % An alarm light flashing instantly as a suspicious parcel passes on a fast conveyor
 
@@ -60,7 +60,7 @@ stock en tiempo real      → streaming
 
 ## video: CDC: leer el diario de Postgres
 
-> CDC, captura de cambios, lee el WAL de Postgres: el diario donde apunta cada cambio antes de aplicarlo. La replicación lógica lo expone como un flujo de inserciones, actualizaciones y borrados.
+> CDC, captura de cambios, lee el WAL de Postgres: el diario donde la base apunta cada cambio antes de hacerlo. Es como leer el diario de alguien en vez de preguntarle qué ha hecho. La replicación lógica lo convierte en un flujo de inserciones, actualizaciones y borrados.
 % A database cylinder with an open notebook beside it where every change is written before it happens
 % A long scroll of change entries unrolling from the notebook into a pipe
 
@@ -76,7 +76,7 @@ app ─► Postgres
 
 ---
 
-> Frente a consultar la tabla cada hora, tiene cuatro ventajas: capta los borrados, no depende de una columna de última modificación fiable, apenas carga la base y conserva el orden real de los cambios.
+> ¿Por qué no consultar la tabla cada hora? Porque CDC gana en cuatro cosas: ve los borrados, no necesita una columna de última modificación fiable, apenas molesta a la base, y respeta el orden real de los cambios.
 % A crossed-out entry on the scroll still being captured and forwarded, showing deletions are kept
 % A tiny reader quietly reading the scroll without touching the database cylinder
 
@@ -89,7 +89,7 @@ Debezium · Datastream · AWS DMS · Fivetran · Airbyte
 
 ## video: Kafka y sus parientes
 
-> Kafka es un log distribuido. Los productores escriben eventos en un topic, y cualquier número de consumidores los lee a su ritmo. Los eventos se guardan un tiempo, así que un consumidor nuevo puede leer desde el principio.
+> Kafka es un log distribuido: un tablón de anuncios gigante. Los productores clavan eventos en un topic, y cualquier número de consumidores los lee a su ritmo. Los eventos se quedan un tiempo, así que uno que llega nuevo puede leer desde el principio.
 % A long horizontal tape of messages; producers on the left append new messages at the end
 % Several readers at different positions along the same message tape, each reading at its own pace
 
@@ -106,7 +106,7 @@ topic  [e1 e2 e3 e4 …]
 
 ---
 
-> Lo que resuelve es desacoplar: la app publica pedido creado una sola vez, y analítica, emails y facturación lo consumen sin que la app sepa que existen. Operarlo uno mismo es caro, por eso existen versiones gestionadas y equivalentes en cada nube.
+> ¿Qué resuelve? Desacoplar. La app publica pedido creado una sola vez, y analítica, emails y facturación lo leen sin que la app sepa que existen. Montarlo y operarlo tú mismo cuesta mucho, por eso hay versiones gestionadas y equivalentes en cada nube.
 % One announcement bell ringing once while three separate rooms receive the same message
 % Cloud-shaped managed service holding the message tape, with a maintenance robot tending it
 

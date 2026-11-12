@@ -6,7 +6,7 @@ summary: Por qué casi toda empresa tiene una base para la app y otra para anal�
 
 ## video: El viaje de un dato
 
-> Un pedido nace en la app y se guarda en una base transaccional, como Postgres o MySQL. Esa base existe para una cosa: que la app lea y escriba pocas filas, muy rápido, muchas veces por segundo.
+> Un pedido nace en la app y se guarda en una base transaccional, como Postgres o MySQL. Piensa en la caja de una tienda: atiende a un cliente tras otro, rapidísimo. Lee y escribe poquitas filas, muchísimas veces por segundo. Para eso existe.
 % A smartphone shopping app with a single small parcel flying out of the screen toward a compact database cylinder
 % A compact database cylinder handling many tiny fast arrows going in and out, like a busy ticket counter
 
@@ -20,7 +20,7 @@ pocas filas · muy rápido · sin parar
 
 ---
 
-> Luego alguien pregunta cuánto se vendió por país el último trimestre. Esa pregunta no se hace en la base de la app: el dato se copia a un warehouse, y una herramienta de BI lo pinta.
+> Luego alguien pregunta: ¿cuánto vendimos por país el último trimestre? Esa pregunta no se le hace a la caja, ¡que hay cola! El dato se copia a un warehouse, el almacén de las preguntas grandes, y una herramienta de BI lo convierte en gráficos.
 % A question mark floating above a world map with a few countries highlighted, waiting for an answer
 % A conveyor belt carrying parcels from a small database cylinder to a large warehouse building
 % A large warehouse building feeding a simple bar chart displayed on a monitor
@@ -37,7 +37,7 @@ app ─► OLTP
 
 ---
 
-> Todo lo que pasa entre esos dos puntos es ingeniería de datos: copiar, limpiar, transformar, programar y vigilar. Cada herramienta con nombre raro del sector resuelve uno de esos pasos.
+> Todo lo que pasa entre la caja y el gráfico es ingeniería de datos: copiar, limpiar, transformar, programar y vigilar. ¿Y esas herramientas con nombres raros? Cada una resuelve uno de esos pasos. Nada más.
 % A long pipeline between a small database and a warehouse, with tiny workers copying, cleaning and labeling parcels along it
 % A row of different small machines along a pipeline, each machine doing one distinct step to the parcels
 
@@ -49,7 +49,7 @@ app ─► OLTP
 
 ## video: OLTP y OLAP
 
-> Dos siglas lo ordenan todo. OLTP es la base de la app: consultas como dame el pedido cuarenta y dos, que tocan pocas filas, con escrituras constantes de una en una.
+> Dos siglas lo ordenan todo. OLTP es la caja de la tienda: preguntas como dame el pedido cuarenta y dos. Pocas filas, y escrituras sin parar, de una en una.
 % A clerk at a counter quickly handing over one single parcel from a shelf
 % Many small arrows hitting a database cylinder one by one in rapid succession
 
@@ -62,7 +62,7 @@ app ─► OLTP
 
 ---
 
-> OLAP es el mundo analítico: consultas como la suma de ventas por mes y país, que recorren millones de filas, con cargas por lotes y tablas desnormalizadas y columnares.
+> OLAP es la oficina que hace cuentas: suma las ventas por mes y país. Recorre millones de filas, recibe los datos por lotes y prefiere tablas anchas, guardadas por columnas.
 % A giant funnel summing thousands of small parcels into one bar chart
 % A big truck delivering parcels in bulk batches to a warehouse loading dock
 
@@ -75,7 +75,7 @@ app ─► OLTP
 
 ---
 
-> Casi toda la arquitectura de datos consiste en mover información del primer mundo al segundo sin romper ninguno de los dos.
+> Y casi toda la arquitectura de datos es esto: llevar información de la caja a la oficina… sin romper ninguna de las dos.
 % A bridge with parcels moving from a small busy shop on the left to a large calm warehouse on the right
 % Both buildings intact and stable while parcels flow across the bridge between them
 
@@ -87,7 +87,7 @@ sin romper la app · sin mentir en el informe
 
 ## video: Filas contra columnas
 
-> Postgres guarda por filas: cada fila completa va junta en páginas de ocho kilobytes. Leer un pedido entero es barato. Pero sumar una sola columna de cincuenta millones de pedidos obliga a leer todas las páginas, con todas sus columnas.
+> Postgres guarda por filas: cada pedido completo va junto, en páginas de ocho kilobytes. Como fichas en un archivador. Sacar una ficha entera, facilísimo. Pero sumar un solo dato de cincuenta millones de fichas… ¡obliga a abrirlas todas!
 % Horizontal drawers each containing a full row of different small objects packed together
 % A magnifying glass forced to open every horizontal drawer to find one kind of object
 
@@ -100,7 +100,7 @@ SUM(importe) → lee TODO
 
 ---
 
-> Los warehouses guardan por columnas. Cada columna vive aparte y comprimida, así que sumar el importe lee solo el importe. Por eso en un warehouse SELECT asterisco es caro, y en BigQuery bajo demanda pagas por los bytes de las columnas que lees.
+> Los warehouses guardan por columnas: cada columna vive aparte y comprimida, como una lista solo de importes. Sumar el importe lee solo esa lista. Por eso allí SELECT asterisco sale caro: en BigQuery bajo demanda pagas por los bytes de las columnas que lees.
 % Data stored as tall vertical glass tubes standing in a row, each tube holding one kind of item
 % Data stored as tall vertical glass tubes standing in a row; only one tube glows amber and is being read while the others stay dark
 % A coin meter attached to the glowing tubes, charging by how much liquid is read

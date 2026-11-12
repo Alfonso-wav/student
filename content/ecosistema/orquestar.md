@@ -6,7 +6,7 @@ summary: Qué aporta un orquestador frente a cron, y el concepto que más separa
 
 ## video: Por qué cron no basta
 
-> Con cron ejecutas un script a una hora. Lo que no tienes: dependencias, reintentos cuando falla una API, alertas, visibilidad de qué corrió y cuánto tardó, ni backfills para reprocesar un mes entero.
+> Con cron lanzas un script a una hora, como un despertador. Y ya. No sabe de dependencias, no reintenta si falla una API, no avisa, no te cuenta qué corrió ni cuánto tardó, y no sabe reprocesar un mes entero.
 % An alarm clock triggering a single script at night, nothing else around it
 % A missing bridge between two tasks, a broken retry loop and a silent alarm
 
@@ -20,7 +20,7 @@ summary: Qué aporta un orquestador frente a cron, y el concepto que más separa
 
 ---
 
-> Un orquestador da todo eso. El trabajo se describe como un DAG, un grafo dirigido sin ciclos: tareas, y flechas de dependencia entre ellas.
+> Un orquestador sí. Es como el director de una obra: el trabajo se dibuja como un DAG, un grafo dirigido sin ciclos. Tareas, y flechas que dicen quién va antes de quién. Nunca en círculo.
 % A conductor directing an orchestra of tasks connected by arrows
 % A directed graph of task boxes with arrows flowing one way, no loops
 
@@ -39,7 +39,7 @@ transformar  tests
 
 ## video: Los tres nombres que oirás
 
-> Airflow es el más extendido: los DAGs se escriben en Python, y Cloud Composer es Airflow gestionado en Google. Dagster se orienta a assets: declaras qué tablas existen y de qué dependen, y él sabe qué está desactualizado. Prefect es Python normal con decoradores.
+> Airflow es el más extendido: los DAGs se escriben en Python, y Cloud Composer es Airflow gestionado en Google. Dagster piensa en assets: declaras qué tablas existen y de qué dependen, y él sabe cuál está caducada. Prefect es Python normal con decoradores.
 % Three different control panels side by side: a pinwheel, a stack of assets, a simple flow line
 % A graph of data tables where outdated tables glow amber
 
@@ -49,7 +49,7 @@ transformar  tests
 
 ---
 
-> Lo importante no es la herramienta: todas resuelven lo mismo. Dependencias, reintentos, programación, observabilidad y backfills.
+> Pero lo importante no es la marca: todas resuelven lo mismo. Dependencias, reintentos, programación, saber qué está pasando, y backfills.
 % Three different control panels all producing the same ordered graph of tasks
 % Five simple unlabeled pictograms in a row: a chain link, a circular retry arrow, a clock, an eye, a rewind symbol
 
@@ -59,7 +59,7 @@ transformar  tests
 
 ## video: Intervalos, no "ahora"
 
-> El concepto clave: cada ejecución procesa un intervalo de datos, no lo que haya ahora mismo. La ejecución del martes procesa el lunes. Si la relanzas el viernes, sigue procesando el lunes.
+> La idea clave: cada ejecución procesa un intervalo de datos, no lo que haya ahora. Como un diario: la página del lunes se escribe el martes. Y si la reescribes el viernes, ¡sigue siendo la página del lunes!
 % A calendar where a run on Tuesday reaches back to process the Monday box
 % A run on Friday still processing the same Monday box, a dotted arrow back in time
 
@@ -71,7 +71,7 @@ backfill marzo  → cada día, el suyo
 
 ---
 
-> Por eso las consultas reciben la fecha como parámetro, y nunca usan la fecha actual. Con esto y la idempotencia, reprocesar cualquier día del pasado es un botón, no un proyecto.
+> Por eso las consultas reciben la fecha como parámetro y nunca usan la fecha de hoy. Súmale idempotencia, que repetir dé el mismo resultado, y reprocesar cualquier día del pasado es pulsar un botón, no un proyecto.
 % A function receiving a date ticket as input instead of looking at a wall clock
 % A big rewind button replaying a whole month of calendar boxes one by one
 

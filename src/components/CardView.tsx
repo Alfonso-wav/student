@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import type { Grade } from 'ts-fsrs'
+import { LESSON_BY_ID } from '../content'
 import { grade, isDue, markSeen, Rating } from '../progress'
 import { getProgress, setProgress } from '../store'
 import type { Card, FlashCard, QuizCard } from '../types'
@@ -17,6 +18,16 @@ const VERB: Record<Card['kind'], string> = {
   video: 'play',
 }
 
+/** Etiqueta de cada tipo en el feed (modo pop). */
+const POP_KIND: Record<Card['kind'], string> = {
+  concept: '📖 idea',
+  quiz: '🧠 quiz',
+  bug: '🐛 caza el fallo',
+  flash: '⚡ flash',
+  lab: '🧪 lab',
+  video: '🎬 vídeo',
+}
+
 interface Props {
   card: Card
   /** Tarjeta visible en el feed: recibe los atajos de teclado. */
@@ -27,18 +38,28 @@ interface Props {
 
 export function CardView({ card, active = false, inFeed = false }: Props) {
   const due = isDue(getProgress(), card, new Date())
+  // En el feed las tarjetas van en modo pop (colores, emoji, celebraciones); en la lección, terminal.
+  const pop = inFeed
   return (
     <article className={`card ${card.kind === 'video' ? 'is-video' : ''}`} aria-labelledby={`t-${card.id}`}>
-      <p className="prompt">
-        <span className="dollar">$</span> {VERB[card.kind]} {card.lessonId}
-        {due && <span className="tag-due"> # repaso</span>}
-      </p>
+      {pop ? (
+        <p className="pop-head">
+          <span className="pop-chip">{POP_KIND[card.kind]}</span>
+          <span className="pop-lesson">{LESSON_BY_ID.get(card.lessonId)?.title ?? card.lessonId}</span>
+          {due && <span className="pop-chip is-due">🔁 repaso</span>}
+        </p>
+      ) : (
+        <p className="prompt">
+          <span className="dollar">$</span> {VERB[card.kind]} {card.lessonId}
+          {due && <span className="tag-due"> # repaso</span>}
+        </p>
+      )}
       <h2 className="card-title" id={`t-${card.id}`}>
         {card.title}
       </h2>
       {card.kind === 'concept' && <Concept card={card} />}
-      {(card.kind === 'quiz' || card.kind === 'bug') && <Quiz card={card} active={active} />}
-      {card.kind === 'flash' && <Flash card={card} active={active} />}
+      {(card.kind === 'quiz' || card.kind === 'bug') && <Quiz card={card} active={active} pop={pop} />}
+      {card.kind === 'flash' && <Flash card={card} active={active} pop={pop} />}
       {card.kind === 'video' && <VideoView card={card} active={active} inFeed={inFeed} />}
       {card.kind === 'lab' && <LabView card={card} onRun={() => setProgress((p) => markSeen(p, card, new Date()))} />}
     </article>
@@ -74,7 +95,18 @@ function Concept({ card }: { card: Card & { body: string } }) {
   )
 }
 
-function Quiz({ card, active }: { card: QuizCard; active: boolean }) {
+/** Explosión de confeti alrededor de un botón (solo modo pop; sin movimiento si se pide). */
+function Burst() {
+  return (
+    <span className="burst" aria-hidden="true">
+      {Array.from({ length: 14 }, (_, i) => (
+        <span key={i} style={{ '--a': `${(i * 360) / 14 + (i % 3) * 9}deg`, '--d': `${56 + (i % 4) * 14}px` } as CSSProperties} />
+      ))}
+    </span>
+  )
+}
+
+function Quiz({ card, active, pop }: { card: QuizCard; active: boolean; pop: boolean }) {
   const [picked, setPicked] = useState<number | null>(null)
   const answered = picked !== null
 
@@ -101,13 +133,14 @@ function Quiz({ card, active }: { card: QuizCard; active: boolean }) {
             <li key={i}>
               <button type="button" className={`option ${state}`} onClick={() => pick(i)} disabled={answered}>
                 <span className="key" aria-hidden="true">
-                  [{i + 1}]
+                  {pop ? i + 1 : `[${i + 1}]`}
                 </span>
                 <span className="option-text">
                   <Markdown src={o.text} inline />
                 </span>
-                {answered && o.correct && <span className="mark">ok</span>}
-                {answered && i === picked && !o.correct && <span className="mark">fallo</span>}
+                {answered && o.correct && <span className="mark">{pop ? '✓' : 'ok'}</span>}
+                {answered && i === picked && !o.correct && <span className="mark">{pop ? '✗' : 'fallo'}</span>}
+                {pop && answered && o.correct && i === picked && <Burst />}
               </button>
             </li>
           )
@@ -117,7 +150,13 @@ function Quiz({ card, active }: { card: QuizCard; active: boolean }) {
         {answered && (
           <div className="explain">
             <p className={correct ? 'result ok' : 'result ko'}>
-              {correct ? 'exit 0 — correcto' : 'exit 1 — vuelve a salir en el próximo repaso'}
+              {pop
+                ? correct
+                  ? '¡Correcto!'
+                  : 'Fallo · volverá en el próximo repaso'
+                : correct
+                  ? 'exit 0 — correcto'
+                  : 'exit 1 — vuelve a salir en el próximo repaso'}
             </p>
             <Markdown src={card.explanation} />
           </div>
@@ -134,7 +173,7 @@ const GRADES: { r: Grade; label: string }[] = [
   { r: Rating.Easy, label: 'fácil' },
 ]
 
-function Flash({ card, active }: { card: FlashCard; active: boolean }) {
+function Flash({ card, active, pop }: { card: FlashCard; active: boolean; pop: boolean }) {
   const [shown, setShown] = useState(false)
   const [graded, setGraded] = useState<Grade | null>(null)
 
@@ -162,7 +201,9 @@ function Flash({ card, active }: { card: FlashCard; active: boolean }) {
   }
   return (
     <>
-      <Markdown src={card.body} />
+      <div className={pop ? 'flip-in' : undefined}>
+        <Markdown src={card.body} />
+      </div>
       <div className="grades" role="group" aria-label="¿Cómo de bien lo sabías?">
         {GRADES.map((g, i) => (
           <button
@@ -173,13 +214,15 @@ function Flash({ card, active }: { card: FlashCard; active: boolean }) {
             disabled={graded !== null}
           >
             <span className="key" aria-hidden="true">
-              [{i + 1}]
+              {pop ? i + 1 : `[${i + 1}]`}
             </span>{' '}
             {g.label}
           </button>
         ))}
       </div>
-      <div aria-live="polite">{graded !== null && <p className="result ok">guardado · vuelve cuando toque</p>}</div>
+      <div aria-live="polite">{graded !== null && (
+          <p className="result ok">{pop ? 'Guardado · vuelve cuando toque' : 'guardado · vuelve cuando toque'}</p>
+        )}</div>
     </>
   )
 }

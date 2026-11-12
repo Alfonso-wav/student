@@ -1,0 +1,493 @@
+/* ==========================================================================
+   Feed en modo pop (DESIGN.md › Feed pop): cada tarjeta lleva su color (--hue en oklch),
+   esquinas redondeadas, letra redonda, emoji y celebraciones. Rutas, lección y stats siguen
+   en modo terminal. Oscuro por defecto: fondos profundos y saturados; claro: pasteles.
+   ========================================================================== */
+
+.pop {
+  --hue: 300;
+  --pop-bg: oklch(0.27 0.08 var(--hue));
+  --pop-surface: oklch(0.34 0.09 var(--hue));
+  --pop-ink: oklch(0.97 0.02 var(--hue));
+  --pop-muted: oklch(0.84 0.06 var(--hue));
+  --pop-line: oklch(0.45 0.1 var(--hue));
+  --pop-accent: oklch(0.78 0.16 var(--hue));
+  --pop-accent-deep: oklch(0.56 0.17 var(--hue));
+  --pop-on-accent: oklch(0.2 0.06 var(--hue));
+  --pop-good: oklch(0.8 0.18 150);
+  --pop-good-deep: oklch(0.58 0.16 150);
+  --pop-on-good: oklch(0.2 0.05 150);
+  --pop-bad: oklch(0.72 0.18 25);
+  --pop-bad-deep: oklch(0.52 0.18 25);
+  --pop-on-bad: oklch(0.18 0.05 25);
+  --pop-font: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --pop-radius: 20px;
+  --pop-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .pop {
+    --pop-bg: oklch(0.94 0.05 var(--hue));
+    --pop-surface: oklch(0.995 0.01 var(--hue));
+    --pop-ink: oklch(0.25 0.07 var(--hue));
+    --pop-muted: oklch(0.42 0.09 var(--hue));
+    --pop-line: oklch(0.84 0.08 var(--hue));
+    --pop-accent: oklch(0.52 0.2 var(--hue));
+    --pop-accent-deep: oklch(0.38 0.16 var(--hue));
+    --pop-on-accent: #fff;
+    --pop-good: oklch(0.52 0.16 150);
+    --pop-good-deep: oklch(0.4 0.13 150);
+    --pop-on-good: #fff;
+    --pop-bad: oklch(0.55 0.2 25);
+    --pop-bad-deep: oklch(0.42 0.17 25);
+    --pop-on-bad: #fff;
+  }
+}
+:root[data-theme='light'] .pop {
+  --pop-bg: oklch(0.94 0.05 var(--hue));
+  --pop-surface: oklch(0.995 0.01 var(--hue));
+  --pop-ink: oklch(0.25 0.07 var(--hue));
+  --pop-muted: oklch(0.42 0.09 var(--hue));
+  --pop-line: oklch(0.84 0.08 var(--hue));
+  --pop-accent: oklch(0.52 0.2 var(--hue));
+  --pop-accent-deep: oklch(0.38 0.16 var(--hue));
+  --pop-on-accent: #fff;
+  --pop-good: oklch(0.52 0.16 150);
+  --pop-good-deep: oklch(0.4 0.13 150);
+  --pop-on-good: #fff;
+  --pop-bad: oklch(0.55 0.2 25);
+  --pop-bad-deep: oklch(0.42 0.17 25);
+  --pop-on-bad: #fff;
+}
+
+.feed-item.pop {
+  background: var(--pop-bg);
+  color: var(--pop-ink);
+  font-family: var(--pop-font);
+  font-size: 17px;
+  line-height: 1.5;
+  border-bottom: 0;
+}
+.pop :focus-visible {
+  outline-color: var(--pop-accent);
+}
+.pop a:hover {
+  color: var(--pop-accent);
+}
+
+/* Cabecera: pastilla con el tipo + lección. */
+.pop-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0 0 var(--space-sm);
+  font-size: 14px;
+  font-weight: 700;
+}
+.pop-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--pop-accent);
+  color: var(--pop-on-accent);
+  font-weight: 700;
+}
+.pop-chip.is-due {
+  background: var(--pop-surface);
+  color: var(--pop-ink);
+  border: 2px solid var(--pop-line);
+}
+.pop-lesson {
+  color: var(--pop-muted);
+  min-width: 0;
+}
+.pop .card-title {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin-bottom: var(--space-md);
+}
+
+/* Texto: código y SQL siguen en mono, en cajitas redondeadas. */
+.pop .md {
+  font-size: 17px;
+}
+.pop .md strong {
+  font-weight: 700;
+  color: var(--pop-accent);
+}
+.pop .md em {
+  color: var(--pop-muted);
+}
+.pop .md ul > li::before {
+  content: '★ ';
+  color: var(--pop-accent);
+}
+.pop .md code,
+.pop .md-inline code {
+  font-size: 0.86em;
+  background: var(--pop-surface);
+  border-radius: 6px;
+  padding: 1px 0.5ch;
+}
+.pop .md pre {
+  background: var(--pop-surface);
+  border: 2px solid var(--pop-line);
+  border-radius: 14px;
+}
+.pop .md pre code {
+  background: none;
+  padding: 0;
+}
+.pop .md blockquote {
+  border-left: 4px solid var(--pop-accent);
+  border-radius: 4px;
+}
+.pop .md th,
+.pop .md td {
+  border-color: var(--pop-line);
+}
+.pop .md th {
+  background: var(--pop-surface);
+}
+
+/* Botones gordos con canto que se hunde al pulsar. */
+.pop .btn-primary,
+.pop .btn-secondary,
+.pop .option {
+  font-family: var(--pop-font);
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 16px;
+  min-height: 48px;
+  transition:
+    transform 90ms ease-out,
+    box-shadow 90ms ease-out,
+    background-color 120ms ease-out,
+    border-color 120ms ease-out;
+}
+.pop .btn-primary {
+  background: var(--pop-accent);
+  border: 0;
+  color: var(--pop-on-accent);
+  box-shadow: 0 5px 0 var(--pop-accent-deep);
+}
+.pop .btn-primary:hover:not(:disabled) {
+  background: var(--pop-accent);
+  color: var(--pop-on-accent);
+  filter: brightness(1.06);
+}
+.pop .btn-secondary,
+.pop .option {
+  background: var(--pop-surface);
+  color: var(--pop-ink);
+  border: 2px solid var(--pop-line);
+  box-shadow: 0 4px 0 var(--pop-line);
+}
+.pop .btn-secondary:hover:not(:disabled),
+.pop .option:hover:not(:disabled) {
+  background: var(--pop-surface);
+  color: var(--pop-ink);
+  border-color: var(--pop-accent);
+}
+.pop .btn-primary:active:not(:disabled),
+.pop .btn-secondary:active:not(:disabled),
+.pop .option:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--pop-accent-deep);
+}
+.pop .btn-secondary.is-picked {
+  border-color: var(--pop-accent);
+  background: var(--pop-accent);
+  color: var(--pop-on-accent);
+  box-shadow: 0 4px 0 var(--pop-accent-deep);
+}
+
+/* Quiz */
+.pop .option {
+  position: relative;
+  font-weight: 700;
+  align-items: center;
+  padding: 12px 14px;
+}
+.pop .option .key {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--pop-bg);
+  color: var(--pop-ink);
+  font-weight: 700;
+  font-size: 14px;
+}
+.pop .option .mark {
+  font-size: 22px;
+  font-weight: 700;
+  color: inherit;
+}
+.pop .option.is-correct {
+  background: var(--pop-good);
+  border-color: var(--pop-good-deep);
+  box-shadow: 0 4px 0 var(--pop-good-deep);
+  color: var(--pop-on-good);
+  animation: pop-win 420ms var(--pop-spring);
+}
+.pop .option.is-wrong {
+  background: var(--pop-bad);
+  border-color: var(--pop-bad-deep);
+  box-shadow: 0 4px 0 var(--pop-bad-deep);
+  color: var(--pop-on-bad);
+  animation: pop-shake 380ms ease-in-out;
+}
+.pop .option.is-dim {
+  opacity: 0.55;
+  color: var(--pop-ink);
+}
+.pop .option:disabled {
+  cursor: default;
+}
+
+.pop .explain {
+  border-top: 0;
+  padding: var(--space-md);
+  background: var(--pop-surface);
+  border-radius: var(--pop-radius);
+  animation: pop-in 320ms var(--pop-spring) both;
+}
+.pop .result {
+  font-size: 20px;
+  font-weight: 700;
+}
+.pop .result.ok {
+  color: var(--pop-good);
+}
+.pop .result.ko {
+  color: var(--pop-bad);
+}
+.pop .hint {
+  color: var(--pop-muted);
+  font-size: 14px;
+}
+
+/* Flash */
+.pop .grades .key {
+  color: inherit;
+  opacity: 0.7;
+}
+.flip-in {
+  animation: pop-flip 420ms var(--pop-spring) both;
+  transform-origin: 50% 0;
+}
+
+/* Confeti: 14 piezas que salen del botón acertado en ángulos repartidos. */
+.burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+.burst > span {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px;
+  border-radius: 3px;
+  background: oklch(0.78 0.2 calc(var(--hue) + 60));
+  animation: burst 760ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.burst > span:nth-child(3n) {
+  background: oklch(0.85 0.17 95);
+  border-radius: 999px;
+}
+.burst > span:nth-child(3n + 1) {
+  background: oklch(0.72 0.2 calc(var(--hue) + 180));
+}
+@keyframes burst {
+  0% { transform: rotate(var(--a)) translateX(0) scale(1.2); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: rotate(var(--a)) translateX(var(--d)) scale(0.4) rotate(140deg); opacity: 0; }
+}
+@keyframes pop-win {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+@keyframes pop-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(2px); }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop-flip {
+  from { opacity: 0; transform: perspective(600px) rotateX(-70deg); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Entrada de la tarjeta al llegar a ella. */
+.feed-item.pop.is-active .card > * {
+  animation: pop-in 380ms var(--pop-spring) both;
+}
+.feed-item.pop.is-active .card > :nth-child(2) { animation-delay: 50ms; }
+.feed-item.pop.is-active .card > :nth-child(3) { animation-delay: 100ms; }
+.feed-item.pop.is-active .card > :nth-child(n + 4) { animation-delay: 150ms; }
+
+/* EOF */
+.feed-item.pop .eof .card-title {
+  color: var(--pop-accent);
+}
+.pop-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0 0;
+}
+.pop-stats > div {
+  background: var(--pop-surface);
+  border-radius: var(--pop-radius);
+  padding: var(--space-md);
+}
+.pop-stats dt {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pop-muted);
+}
+.pop-stats dd {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* Vídeo pop: imagen redondeada, barras de escena arriba, subtítulo encima de la imagen. */
+.pop .video-stage {
+  border: 0;
+  border-radius: 24px;
+  background: var(--pop-surface);
+  box-shadow: 0 6px 0 var(--pop-accent-deep);
+}
+.pop .video-img {
+  transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pop .video-segs {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+.pop .video-seg {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.28);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.35);
+  overflow: hidden;
+}
+.pop .video-seg > span {
+  display: block;
+  height: 100%;
+  background: #fff;
+  border-radius: inherit;
+  transform-origin: 0 50%;
+  transition: transform 120ms linear;
+}
+.pop .video-hint,
+.pop .video-done {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  bottom: auto;
+  translate: -50% -50%;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pop-accent);
+  color: var(--pop-on-accent);
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 5px 0 var(--pop-accent-deep);
+  animation: pop-pulse 1.6s ease-in-out infinite;
+}
+.pop .video-done {
+  animation: pop-in 380ms var(--pop-spring) both;
+}
+@keyframes pop-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.pop .video-stage .video-sub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  min-height: 0;
+  padding: 56px 16px 18px;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0));
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.22;
+  text-align: center;
+  text-shadow:
+    0 2px 0 rgb(0 0 0 / 0.55),
+    0 0 12px rgb(0 0 0 / 0.35);
+  animation: sub-pop 260ms var(--pop-spring) both;
+}
+.pop .video-sub > span {
+  /* inline-block para poder escalar la palabra; el espacio va como margen (el del texto se pierde). */
+  display: inline-block;
+  margin: 0 0.14em;
+}
+.pop .video-sub .is-now {
+  color: oklch(0.9 0.17 95);
+  transform: scale(1.06);
+  transition: transform 140ms var(--pop-spring);
+}
+@keyframes sub-pop {
+  from { opacity: 0; transform: translateY(10px) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+
+.pop .video-controls .btn-secondary {
+  min-width: 52px;
+  padding: 12px;
+}
+.pop .video-bar {
+  color: var(--pop-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-item.pop .card > *,
+  .pop .option,
+  .pop .explain,
+  .flip-in,
+  .pop .video-hint,
+  .pop .video-done,
+  .pop .video-sub {
+    animation: none !important;
+  }
+  .burst {
+    display: none;
+  }
+  .pop .video-sub .is-now {
+    transform: none;
+  }
+}
+
+/* Quiz, flash y EOF: centrados en vertical para no dejar media pantalla vacía. */
+.feed-item.pop:not(.is-video) > .card {
+  margin: auto;
+}

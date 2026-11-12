@@ -34,6 +34,9 @@ MAX_TRIES = 3
 # Whisper escribe cifras ("200.000") donde el texto dice "doscientas mil": un 15-20 % de diferencia
 # es normal. Por encima de esto suele ser un fallo real del TTS.
 MAX_WER = 0.35
+# Más expresiva y pausada que los valores por defecto (0.5 / 0.5).
+EXAGGERATION = 0.7
+CFG_WEIGHT = 0.3
 
 
 def load_model() -> ChatterboxMultilingualTTS:
@@ -50,7 +53,7 @@ def load_model() -> ChatterboxMultilingualTTS:
     if not t3.exists():
         shutil.copy(hf_hub_download("ResembleAI/Chatterbox-Multilingual-es-es", "t3_es_es.safetensors"), t3)
     model = ChatterboxMultilingualTTS.from_local(ckpt, "cuda", t3_model=t3.name)
-    model.prepare_conditionals(str(REFERENCE))
+    model.prepare_conditionals(str(REFERENCE), exaggeration=EXAGGERATION)
     return model
 
 
@@ -67,7 +70,7 @@ def synth(model: ChatterboxMultilingualTTS, text: str, seed: int) -> torch.Tenso
     torch.manual_seed(seed)
     parts = []
     for s in sentences(text):
-        parts += [model.generate(s, language_id="es"), torch.zeros(1, int(model.sr * PAUSE_S))]
+        parts += [model.generate(s, language_id="es", exaggeration=EXAGGERATION, cfg_weight=CFG_WEIGHT), torch.zeros(1, int(model.sr * PAUSE_S))]
     return torch.cat(parts[:-1], dim=1)
 
 

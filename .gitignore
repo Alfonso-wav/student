@@ -9,3 +9,4 @@ tools/tts/.ckpt
 __pycache__
 tools/img/.venv
 *.apk
+tools/tts/voz-referencia.wav

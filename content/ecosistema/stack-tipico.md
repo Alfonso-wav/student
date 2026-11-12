@@ -6,7 +6,7 @@ summary: Las piezas de casi cualquier plataforma de datos, las preguntas que imp
 
 ## video: El stack más común
 
-> Con nombres distintos, esta forma aparece en la mayoría de empresas. Una base para la app, una ingesta hacia el warehouse, capas de transformación dentro, y un BI encima.
+> Con nombres distintos, esta forma sale en casi todas las empresas. Una base para la app. Una ingesta que lleva los datos al warehouse. Capas de transformación dentro. Y un BI encima. Una tubería con cuatro tramos.
 % A vertical flow: small app database at the top, pipe down into a warehouse with three floors, dashboard screen at the bottom
 % The same vertical data flow drawn as a simple map seen in many different companies
 
@@ -22,7 +22,7 @@ BI              Metabase, Looker…
 
 ---
 
-> Las cinco preguntas que un senior hace al llegar. Cómo llega el dato. Dónde vive la lógica. Quién se entera si algo falla. Si hay una sola definición de cada métrica. Y cuánto cuesta el warehouse al mes.
+> Las cinco preguntas que conviene hacer al llegar a un equipo nuevo. ¿Cómo llega el dato? ¿Dónde vive la lógica? ¿Quién se entera si algo falla? ¿Hay una sola definición de cada métrica? ¿Y cuánto cuesta el warehouse al mes?
 % A senior engineer with a short checklist of five questions looking at a data pipeline
 % Five small icons: an incoming pipe, a code tree, an alarm bell, a single ruler, a coin
 
@@ -34,7 +34,7 @@ BI              Metabase, Looker…
 
 ## video: El arte de no añadir herramientas
 
-> Cada herramienta nueva cuesta: alguien la opera, la actualiza, la entiende a las tres de la mañana y se la explica al siguiente que llegue.
+> Cada herramienta nueva es como adoptar una mascota: alguien tiene que cuidarla, actualizarla, entenderla a las tres de la mañana y explicársela al siguiente que llegue.
 % A toolbox overflowing with many tools, a tired engineer at night holding a lantern
 % Each extra tool attached to a person who must maintain it
 
@@ -44,7 +44,7 @@ operar · actualizar · depurar de madrugada · enseñar
 
 ---
 
-> El junior pregunta qué herramienta usamos. El senior pregunta antes: qué problema concreto tenemos hoy, si ya lo resuelve algo que tenemos, cuál es la solución más aburrida que funciona, y qué pasa cuando falla.
+> El junior pregunta: ¿qué herramienta usamos? El senior pregunta antes: ¿qué problema tenemos hoy? ¿Ya lo resuelve algo que tenemos? ¿Cuál es la solución más aburrida que funciona? ¿Y qué pasa cuando falla?
 % One simple boring hammer chosen among many shiny complex gadgets
 % A question mark becoming a scale weighing options with numbers
 
@@ -88,7 +88,7 @@ Alguien propone montar un clúster de Spark para transformar 30 GB diarios que *
 
 ## video: Lo siguiente
 
-> Ya tienes el mapa. A partir de aquí, profundidad en las piezas que más se repiten. Primero, Postgres por dentro: cómo decide el planificador, índices de verdad, y un laboratorio con un Postgres real corriendo en el móvil.
+> ¡Ya tienes el mapa! Ahora toca bajar a las piezas que más se repiten. Primero, Postgres por dentro: cómo decide el planificador, índices de verdad, y un laboratorio con un Postgres real corriendo en el móvil.
 % A map with a path leading into a database cylinder opened to show its internal gears
 % A small phone running a database engine inside it
 
